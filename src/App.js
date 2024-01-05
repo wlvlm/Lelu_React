@@ -9,6 +9,7 @@ import HomeApp from "./pages/HomeApp"
 import DiscoverApp from "./pages/DiscoverApp"
 import CommunityApp from "./pages/CommunityApp"
 import AccountApp from "./pages/AccountApp"
+import ProfilePage from "./pages/ProfilePage"
 import Login from "./pages/Login"
 import { useEffect, useState } from "react"
 import { jwtDecode } from "jwt-decode"
@@ -16,6 +17,7 @@ import { jwtDecode } from "jwt-decode"
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState(null)
+  // console.log(user)
 
   useEffect(() => {
     // Je vérifie si un token est déjà présent
@@ -60,6 +62,7 @@ function App() {
               path="/account"
               element={<AccountApp onLogout={handleLogout} />}
             />
+            <Route path="/profile/:id" element={<ProfilePage />} />
           </>
         )}
 

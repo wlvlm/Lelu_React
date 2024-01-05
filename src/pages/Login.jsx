@@ -48,7 +48,7 @@ const Login = ({ onLogin }) => {
       localStorage.setItem("jwt", token)
       setMessage("Vous êtes bien connecté")
       onLogin()
-      navigate("/")
+      navigate("/index")
     } else {
       setMessage("Erreur lors de la connexion")
     }

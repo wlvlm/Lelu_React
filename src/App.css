@@ -244,7 +244,7 @@ main.login {
 }
 
 .title {
-  font-size: 62px;
+  font-size: 32px;
   font-weight: bold;
   font-family: var(--fontMain);
   text-transform: uppercase;
@@ -253,6 +253,7 @@ main.login {
   z-index: 5;
   cursor: default;
   max-height: 20%;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   text-wrap: nowrap;
@@ -262,8 +263,8 @@ main.login {
 .title::before {
   content: attr(data-title);
   position: absolute;
-  top: -5px;
-  left: -5px;
+  top: -2px;
+  left: -2px;
   color: transparent;
   -webkit-text-stroke: 2px var(--green);
   z-index: -1;
@@ -322,6 +323,234 @@ main.login {
 .starContainer {
   color: var(--yellow);
   font-size: 45px;
+}
+
+.rightSide {
+  padding-left: 2vh;
+}
+
+.commentWrapper {
+  max-height: 85%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.commentWrapper.account {
+  width: 50%;
+}
+
+.commentWrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.commentWrapper.account::-webkit-scrollbar {
+  display: bi;
+}
+
+.commentContainer {
+  text-align: left;
+  list-style: none;
+  margin-bottom: 0.5vh;
+  text-wrap: balance;
+  font-family: var(--fontMain);
+  scroll-snap-align: center;
+}
+
+.commentAuthor {
+  font-size: 23px;
+  color: var(--green);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.commentContent {
+  font-size: 16px;
+  text-align: justify;
+}
+
+.postComment {
+  width: 50%;
+  border-radius: 12px;
+  border: none;
+  -webkit-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+  padding: 12px 12px;
+  position: absolute;
+  left: 0;
+}
+
+.container.account {
+  width: 90%;
+  max-width: unset;
+}
+
+.container.account > div {
+  text-align: left;
+  margin-bottom: 5vh;
+}
+
+.container.account > div > * {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.container.account > div > *:hover {
+  cursor: default;
+}
+
+.container.account > div > h1 {
+  font-size: 2.4rem;
+}
+
+.accountUsername, .accountUsernameLink {
+  color: var(--green);
+  font-size: 2.4rem;
+  text-decoration: none;
+}
+
+.accountUsernameLink:visited {
+  color: inherit;
+}
+
+.accountEmail {
+  color: var(--grey);
+  font-weight: 200;
+  font-style: italic;
+}
+
+.accountTitle {
+  text-align: left;
+}
+
+.updateField {
+  position: fixed;
+  bottom: 15px;
+  z-index: 999;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-family: var(--fontMain);
+  width: 90%;
+  height: 10vh;
+  left: 50vw;
+  transform: translateX(-47%);
+  overflow: auto;
+  transition: all 0.3s ease-in-out;
+}
+
+.updateField.hidden {
+  bottom: -12vh;
+}
+
+.deleteButton > button {
+  color: white;
+  font-family: var(--fontMain);
+  background-color: darkred;
+  border-radius: 12px;
+  border: none;
+  padding: 5px 10px;
+}
+
+.deleteButton.account {
+  text-align: left;
+}
+
+.deleteButton > button:hover {
+  cursor: pointer;
+  background-color: rgb(173, 2, 2);
+}
+
+.updateButton > button {
+  color: white;
+  font-family: var(--fontMain);
+  background-color: var(--blue);
+  border-radius: 12px;
+  border: none;
+  padding: 5px 10px;
+}
+
+.updateButton.account {
+  text-align: left;
+}
+
+.updateButton > button:hover {
+  cursor: pointer;
+  background-color: #2869af;
+}
+
+.updateDeleteButtons > *,
+.updateDeleteButtons * {
+  margin-bottom: 0.5vh;
+  width: 100%;
+}
+
+.interactionContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 20%;
+}
+
+.accountCommentContainer {
+  margin-bottom: 3vh;
+  /* height: 15vh; */
+  background: white;
+  border-radius: 12px;
+  -webkit-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  position: relative;
+}
+
+.accountCommentContainer > * {
+  margin-bottom: 0.5vh;
+}
+
+.accountCommentContainer img {
+  height: 100%;
+  width: unset;
+  aspect-ratio: unset;
+  margin-left: 20px;
+}
+
+.bookInfoAccount {
+  text-align: left;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin: 0 !important;
+  width: 30%;
+  max-height: 100%;
+}
+
+.bookInfoAccount > div {
+  width: 50%;
+}
+
+.updateDeleteButtons {
+  list-style: none;
+}
+
+.commentContent.account {
+  font-size: 22px;
+  text-align: left;
+}
+
+.commentDate {
+  color: var(--grey);
+  text-align: left;
+  font-weight: 400;
+  font-style: italic;
+  position: absolute;
+  top: 22px;
+  list-style: none;
 }
 
 .search {
@@ -441,6 +670,10 @@ main.login {
     margin-right: 10vw;
   }
 
+  .postComment {
+    width: 80%;
+  }
+
   nav ul {
     flex-direction: column;
   }
@@ -454,5 +687,22 @@ main.login {
   nav ul li img.account,
   nav ul li img {
     width: 45px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+}
+
+@media screen and (max-width: 480px) {
+  .commentWrapper {
+    max-height: 70%;
+  }
+
+  .commentAuthor {
+    font-size: 18px;
+  }
+
+  .commentContent {
+    font-size: 14px;
   }
 }

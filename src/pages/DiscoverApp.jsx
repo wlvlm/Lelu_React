@@ -1,5 +1,5 @@
 // import Home from "./Home"
-import Navbar from "../components/Navbar/Navbar"
+import Navbar from "../components/Navbar"
 import Favorite from "../assets/img/Favorite.png"
 
 function DiscoverApp() {
