@@ -205,6 +205,36 @@ main.login {
   height: 80vh;
 }
 
+p.bad {
+  padding: 22px;
+  color: #8b2929;
+  font-family: var(--fontSecond);
+  font-weight: 700;
+  font-size: 22px;
+  border-radius: 12px;
+  background: rgb(189, 50, 50);
+  border: 3px solid #8b2929;
+  width: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  position: fixed;
+}
+
+p.good {
+  padding: 22px;
+  color: #298b36;
+  font-family: var(--fontSecond);
+  font-weight: 700;
+  font-size: 22px;
+  border-radius: 12px;
+  background: #31c245;
+  border: 3px solid #298b36;
+  width: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  position: fixed;
+}
+
 .container {
   height: 98vh;
   max-height: 98vh;
@@ -258,6 +288,10 @@ main.login {
   text-overflow: ellipsis;
   text-wrap: nowrap;
   display: inline-block;
+}
+
+.title.ratingTitle {
+  font-size: 62px;
 }
 
 .title::before {
@@ -322,7 +356,6 @@ main.login {
 
 .starContainer {
   color: var(--yellow);
-  font-size: 45px;
 }
 
 .rightSide {
@@ -330,7 +363,7 @@ main.login {
 }
 
 .commentWrapper {
-  max-height: 85%;
+  max-height: 75%;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
@@ -376,8 +409,6 @@ main.login {
   -webkit-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
   box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
   padding: 12px 12px;
-  position: absolute;
-  left: 0;
 }
 
 .container.account {
@@ -404,7 +435,8 @@ main.login {
   font-size: 2.4rem;
 }
 
-.accountUsername, .accountUsernameLink {
+.accountUsername,
+.accountUsernameLink {
   color: var(--green);
   font-size: 2.4rem;
   text-decoration: none;
@@ -487,10 +519,43 @@ main.login {
 }
 
 .interactionContainer {
-  position: relative;
+  position: absolute;
   display: flex;
   align-items: center;
+  justify-content: space-around;
+  width: 48%;
   height: 20%;
+  top: 75%;
+}
+
+.interactionContainer > form {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.like {
+  border: none;
+  background: var(--pink);
+  border-radius: 50%;
+  padding: 15px;
+  margin: 10px;
+}
+
+.likes {
+  color: var(--pink);
+}
+
+.like:hover {
+  cursor: pointer;
+  background: #ffabf5;
+}
+
+.likeImg {
+  width: 25px;
+  object-fit: contain;
+  transform: translateY(10%);
 }
 
 .accountCommentContainer {
@@ -660,6 +725,106 @@ main.login {
   bottom: -31px;
 }
 
+.modalOverlay {
+  z-index: 99999;
+  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.modalRating {
+  width: 50vw;
+  height: 90vh;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background: white;
+  transform: translate(-50%, -50%);
+  border-radius: 12px;
+  padding: 22px;
+}
+
+.ratingCover {
+  display: flex;
+  justify-content: center;
+  margin: 2vh;
+}
+
+.modalCover {
+  width: unset;
+  height: 100%;
+  object-fit: contain;
+}
+
+.rating.modal {
+  position: unset;
+  overflow: visible;
+}
+
+.titleModal {
+  font-size: 32px;
+  font-weight: bold;
+  font-family: var(--fontMain);
+  text-transform: uppercase;
+  color: var(--blue);
+  z-index: 5;
+  cursor: default;
+  max-height: 20%;
+  max-width: 100%;
+  text-wrap: nowrap;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+.modalInput {
+  width: 100%;
+  height: 40vh;
+  border-radius: 12px;
+  resize: none;
+  font-family: var(--fontSecond);
+  font-weight: bold;
+  color: var(--blue);
+  font-size: 18px;
+  padding: 10px;
+  border: none;
+  -webkit-box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.16);
+  box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.16);
+  outline: none;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+.star {
+  cursor: pointer;
+}
+
+.star.model {
+  cursor: default;
+}
+
+.ratingButton {
+  font-family: var(--fontMain);
+  padding: 8px;
+  border-radius: 12px;
+  border: none;
+  background: var(--lightBlue);
+  color: white;
+  font-size: 1.2rem;
+  margin-top: 1.5vh;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.ratingButton:hover {
+  background: var(--blue);
+}
+
 @media screen and (min-width: 768px) {
   nav {
     left: 0;
@@ -671,7 +836,7 @@ main.login {
   }
 
   .postComment {
-    width: 80%;
+    width: 100%;
   }
 
   nav ul {

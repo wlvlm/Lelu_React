@@ -64,9 +64,14 @@ function ProfilePage({ onLogout }) {
         const response = await fetch(`http://localhost:3001/api/users/${id}`)
         const data = await response.json()
 
-        const userData = { ...data.data }
-        // On les stocke dans le state Profile pour les afficher
-        setProfile(userData)
+        if (data.data) {
+          const userData = { ...data.data }
+          // On les stocke dans le state Profile pour les afficher
+          setProfile(userData)
+        } else {
+          navigate("/index")
+          alert(`Aucun profil n'existe pour l'id ${id}, retour à l'accueil...`)
+        }
       } catch (error) {
         console.error("Erreur lors de la récupération des données:", error)
       }
@@ -80,7 +85,6 @@ function ProfilePage({ onLogout }) {
   useEffect(() => {
     // On vérifie si l'utilisateur consulte sa propre page et si oui on le renvoie vers la page "Mon Compte"
     if (user.dataId === parseInt(id)) {
-      console.log("Oui")
       navigate("/account")
     }
   }, [user, id, navigate])
@@ -95,6 +99,7 @@ function ProfilePage({ onLogout }) {
         const bookData = await response.json()
 
         const bookInfo = {
+          id: bookData.id,
           title: bookData.volumeInfo.title,
           author: bookData.volumeInfo.authors
             ? bookData.volumeInfo.authors.join(", ")
@@ -132,7 +137,11 @@ function ProfilePage({ onLogout }) {
             <h2 className="accountUsername">@{profile.username}</h2>
           </Link>
         </div>
-        <h3 className="accountTitle">Commentaires ({comments.length}) :</h3>
+        <h3 className="accountTitle">
+          {comments.length > 0
+            ? `Commentaires :       (${comments.length})`
+            : "Aucun commentaire pour l'instant"}
+        </h3>
         <br />
         <ul>
           {comments.map((comment, index) => (
@@ -156,6 +165,12 @@ function ProfilePage({ onLogout }) {
                     </p>
                     <p className="bookInfoISBN">
                       ISBN : {books[comment.bookId].isbn}
+                    </p>
+                    <p>
+                      {/* <Link to={`/index?search=${books[comment.bookId].id}`}> */}
+                      <Link to={`/index?search=${books[comment.bookId].isbn}`}>
+                        Voir plus
+                      </Link>
                     </p>
                   </div>
                   {books[comment.bookId].cover && (

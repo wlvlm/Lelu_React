@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { jwtDecode } from "jwt-decode"
 
@@ -189,6 +189,8 @@ function AccountApp({ onLogout }) {
     setUpdateComment(selectedComment.content)
   }
 
+  const handleUserUpdate = () => {}
+
   return (
     <>
       <Navbar />
@@ -198,9 +200,14 @@ function AccountApp({ onLogout }) {
           <h2 className="accountUsername">@{user.dataUsername}</h2>
           <h2 className="accountEmail">{user.dataEmail}</h2>
           <br />
+          <button onClick={handleUserUpdate}>Mettre à jour</button>
           <button onClick={handleLogout}>Se déconnecter</button>
         </div>
-        <h3 className="accountTitle">Commentaires ({comments.length}) :</h3>
+        <h3 className="accountTitle">
+          {comments.length > 0
+            ? `Commentaires :     (${comments.length})`
+            : "Aucun commentaire pour l'instant"}
+        </h3>
         <br />
         <ul>
           {comments.map((comment, index) => (
@@ -245,6 +252,11 @@ function AccountApp({ onLogout }) {
                     <p className="bookInfoISBN">
                       ISBN : {books[comment.bookId].isbn}
                     </p>
+                    <p>
+                      <Link to={`/index?search=${books[comment.bookId].isbn}`}>
+                        Voir plus
+                      </Link>
+                    </p>
                   </div>
                   {books[comment.bookId].cover && (
                     <img
@@ -255,36 +267,33 @@ function AccountApp({ onLogout }) {
                   )}
                 </li>
               )}
-              {changing ? (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    handleUpdateComment(
-                      selectedComment.content,
-                      selectedComment.id
-                    )
-                  }}
-                >
-                  <textarea
-                    value={updateComment}
-                    onChange={(e) => setUpdateComment(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault()
-                        handleUpdateComment(
-                          selectedComment.content,
-                          selectedComment.id
-                        )
-                      }
-                    }}
-                    className={`updateField`}
-                  />
-                  <button type="submit">Mettre à jour</button>
-                </form>
-              ) : null}
             </li>
           ))}
         </ul>
+        {changing ? (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleUpdateComment(selectedComment.content, selectedComment.id)
+            }}
+          >
+            <textarea
+              value={updateComment}
+              onChange={(e) => setUpdateComment(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault()
+                  handleUpdateComment(
+                    selectedComment.content,
+                    selectedComment.id
+                  )
+                }
+              }}
+              className={`updateField`}
+            />
+            {/* <button type="submit">Mettre à jour</button> */}
+          </form>
+        ) : null}
       </div>
     </>
   )

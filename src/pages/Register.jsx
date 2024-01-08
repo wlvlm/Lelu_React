@@ -14,48 +14,56 @@ import { useNavigate, Link } from "react-router-dom"
 //   }
 // }
 
-const Login = ({ onLogin }) => {
+const Register = ({ loginThroughRegister }) => {
   const [message, setMessage] = useState(null)
   const [messageStatus, setMessageStatus] = useState(null)
   const navigate = useNavigate()
 
-  const handleLogin = async (event) => {
+  const handleRegister = async (event) => {
     event.preventDefault()
 
     const email = event.target.email.value
+    const username = event.target.username.value
     const password = event.target.password.value
 
-    const loginData = {
+    const registerData = {
       email,
+      username,
       password,
     }
 
-    const loginDataJson = JSON.stringify(loginData)
+    const registerDataJson = JSON.stringify(registerData)
 
-    console.log(loginDataJson)
+    const registerResponse = await fetch(
+      "http://localhost:3001/api/users/register",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: registerDataJson,
+      }
+    )
 
-    const loginResponse = await fetch("http://localhost:3001/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: loginDataJson,
-    })
+    const registerResponseData = await registerResponse.json()
+    const token = registerResponseData.data
 
-    const loginResponseData = await loginResponse.json()
-    const token = loginResponseData.data
-
-    if (token) {
-      localStorage.setItem("jwt", token)
-      setMessage("Vous êtes bien connecté")
-      setMessageStatus(loginResponseData.isGood)
-      setTimeout(() => {
-        onLogin()
-        navigate("/index")
-      }, 1000)
+    if (registerResponseData) {
+      setMessage(registerResponseData.message)
+      setMessageStatus(registerResponseData.isGood)
+      if (token) {
+        // return console.log(token)
+        localStorage.setItem("jwt", token)
+        setMessage("Vous êtes bien connecté")
+        setMessageStatus(registerResponseData.isGood)
+        setTimeout(() => {
+          navigate("/index")
+          loginThroughRegister()
+        }, 1000)
+      }
     } else {
-      setMessage(loginResponseData.message)
-      setMessageStatus(loginResponseData.isGood)
+      setMessage("Erreur lors de l'inscription")
+      setMessageStatus(registerResponseData.isGood)
     }
   }
 
@@ -65,8 +73,11 @@ const Login = ({ onLogin }) => {
       <main class="login">
         <div class="modal">
           <h1 class="logo">LELU</h1>
-          <form onSubmit={handleLogin} class="login">
+          <form class="login" onSubmit={handleRegister}>
             <input placeholder="Email*" required type="email" name="email" />
+            <br />
+            <br />
+            <input placeholder="Pseudo*" required type="text" name="username" />
             <br />
             <br />
 
@@ -94,14 +105,12 @@ const Login = ({ onLogin }) => {
             </div>
             <br />
             <br />
-            <input type="submit" value="Se connecter" />
+            <input type="submit" value="S'inscrire" />
             <br />
             <br />
 
-            <Link to="/register">S'inscrire</Link>
-            {/* <a href="register.php">S'inscrire</a> */}
+            <Link to="/Login">Se connecter</Link>
             <br />
-            {/* <a href="forgottenPassword.php">Mot de passe oublié ?</a> */}
           </form>
         </div>
       </main>
@@ -109,4 +118,4 @@ const Login = ({ onLogin }) => {
   )
 }
 
-export default Login
+export default Register

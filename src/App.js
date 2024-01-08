@@ -11,13 +11,13 @@ import CommunityApp from "./pages/CommunityApp"
 import AccountApp from "./pages/AccountApp"
 import ProfilePage from "./pages/ProfilePage"
 import Login from "./pages/Login"
+import Register from "./pages/Register"
 import { useEffect, useState } from "react"
 import { jwtDecode } from "jwt-decode"
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(null)
   const [user, setUser] = useState(null)
-  // console.log(user)
 
   useEffect(() => {
     // Je vérifie si un token est déjà présent
@@ -30,6 +30,7 @@ function App() {
       // Mise à jour l'état de l'utilisateur avec les informations d'authentification
       setUser(decodedToken)
       setIsLoggedIn(true)
+      return console.log(isLoggedIn)
     }
   }, [])
 
@@ -49,7 +50,7 @@ function App() {
       <Routes>
         {/* Redirection en fonction de l'état isLoggedIn */}
         {!isLoggedIn && <Route path="/*" element={redirectToLogin} />}
-        {isLoggedIn && <Route path="/*" element={redirectToHome} />}
+        {isLoggedIn && <Route path="*" element={redirectToHome} />}
         {isLoggedIn && <Route path="/login" element={redirectToHome} />}
 
         {/* Pages pour les utilisateurs connectés */}
@@ -68,7 +69,13 @@ function App() {
 
         {/* Page de connexion uniquement pour les utilisateurs non connectés */}
         {!isLoggedIn && (
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <>
+            <Route path="/login" element={<Login onLogin={handleLogin} />} />
+            <Route
+              path="/register"
+              element={<Register loginThroughRegister={handleLogin} />}
+            />
+          </>
         )}
 
         {/* Redirection pour l'URL sans "/" à la fin */}

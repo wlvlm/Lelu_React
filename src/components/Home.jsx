@@ -1,13 +1,35 @@
 import ACCESS_KEY from "../assets/config.js"
 import React, { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
 import BookCard from "./BookCard"
 
 function Home() {
   const [books, setBooks] = useState([])
+  const [likes, setLikes] = useState({})
+  const [ratings, setRatings] = useState({})
   const [comments, setComments] = useState({})
-  const [value, setValue] = useState("Harry%20Potter")
+  const search = useLocation()
+  const [value, setValue] = useState("")
 
-  const fetchBooksAndComments = async () => {
+  const token = localStorage.getItem("jwt")
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(search)
+    const isbnParam = searchParams.get("search")
+
+    fetchBooksData()
+
+    if (isbnParam) {
+      const isbn = isbnParam.replace("?search=", "")
+      console.log("ISBN:", isbn, "Value:", value)
+      setValue(isbn)
+    } else {
+      console.log("No ISBN found")
+      setValue(value ? value : "Harry Potter")
+    }
+  }, [search, value])
+
+  const fetchBooksData = async () => {
     try {
       const response = await fetch(
         `https://www.googleapis.com/books/v1/volumes?q=${value}&orderBy=relevance&maxResults=20&key=${ACCESS_KEY}`
@@ -48,18 +70,107 @@ function Home() {
           console.error(
             `Aucun commentaire trouvé pour le livre "${book.title}"`
           )
+          setComments((prevComments) => ({
+            ...prevComments,
+            [book.id]: [],
+          }))
         }
       })
 
-      await Promise.all(commentsPromises)
+      const likesPromises = booksData.map(async (book) => {
+        try {
+          const likesResponse = await fetch(
+            `http://localhost:3001/api/likes/${book.id}`
+          )
+          const likesData = await likesResponse.json()
+
+          if (likesData.data) {
+            const like = likesData.data
+            setLikes((prevLikes) => ({
+              ...prevLikes,
+              [book.id]: like.likes,
+            }))
+            console.log(likes)
+          } else {
+            // Si aucun like n'est trouvé pour ce livre, initialisez-le à 0
+            setLikes((prevLikes) => ({
+              ...prevLikes,
+              [book.id]: 0,
+            }))
+          }
+        } catch (error) {
+          console.error(
+            `Erreur lors de la récupération des likes pour le livre ${book.id}:`,
+            error
+          )
+          // En cas d'erreur, initialisez les likes à 0
+          setLikes((prevLikes) => ({
+            ...prevLikes,
+            [book.id]: 0,
+          }))
+          console.log(likes)
+        }
+      })
+
+      const ratingPromises = booksData.map((book) => {
+        return fetch(`http://localhost:3001/api/review/book/${book.id}`)
+          .then((ratingResponse) => ratingResponse.json())
+          .then((ratingData) => {
+            const reviews = ratingData.data
+
+            if (Array.isArray(reviews) && reviews.length > 0) {
+              // Extrayez toutes les notes des avis
+              const ratingsArray = reviews.map((review) => review.rating)
+
+              // Calculer la moyenne des notes
+              let averageRating =
+                ratingsArray.reduce((sum, rating) => sum + rating, 0) /
+                ratingsArray.length
+
+              averageRating = averageRating.toFixed(1)
+
+              setRatings((prevRatings) => ({
+                ...prevRatings,
+                [book.id]: averageRating,
+              }))
+            } else {
+              // Si aucun avis n'est trouvé pour ce livre, initialisez-le à 0
+              setRatings((prevRatings) => ({
+                ...prevRatings,
+                [book.id]: 0,
+              }))
+            }
+            return null
+          })
+          .catch((error) => {
+            console.error(
+              `Erreur lors de la récupération des notes pour le livre ${book.id}:`,
+              error
+            )
+            setRatings((prevRatings) => ({
+              ...prevRatings,
+              [book.id]: 0,
+            }))
+            return null
+          })
+      })
+
+      await Promise.all([
+        ...commentsPromises,
+        ...likesPromises,
+        ...ratingPromises,
+      ])
     } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error)
+      console.error(
+        "Erreur lors de la récupération des données:",
+        error.message
+      )
     }
   }
 
-  useEffect(() => {
-    fetchBooksAndComments()
-  }, [value])
+  // useEffect(() => {
+  //   fetchBooksAndComments()
+  // }, [value])
 
   const handleInputChange = (event) => {
     event.preventDefault()
@@ -83,6 +194,8 @@ function Home() {
             <BookCard
               key={index}
               book={book}
+              likes={likes}
+              ratingAverage={ratings}
               comments={comments[book.id] || []}
             />
           </div>
