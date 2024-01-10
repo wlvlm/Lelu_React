@@ -2,7 +2,7 @@ import logo from "../assets/img/LELU_logo.svg"
 import index from "../assets/img/index.svg"
 import catalog from "../assets/img/catalog.svg"
 import community from "../assets/img/community.svg"
-import account from "../assets/img/account.png"
+import account from "../assets/img/defaultPp.png"
 import { Link } from "react-router-dom"
 
 function Navbar() {

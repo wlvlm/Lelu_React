@@ -10,13 +10,19 @@ import DiscoverApp from "./pages/DiscoverApp"
 import CommunityApp from "./pages/CommunityApp"
 import AccountApp from "./pages/AccountApp"
 import ProfilePage from "./pages/ProfilePage"
+import AdminPage from "./pages/AdminPage"
+import AdminComment from "./components/AdminComment"
+import AdminReview from "./components/AdminReview"
+import AdminUser from "./components/AdminUser"
+import AdminEdit from "./components/AdminEdit"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import { useEffect, useState } from "react"
 import { jwtDecode } from "jwt-decode"
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -30,7 +36,6 @@ function App() {
       // Mise à jour l'état de l'utilisateur avec les informations d'authentification
       setUser(decodedToken)
       setIsLoggedIn(true)
-      return console.log(isLoggedIn)
     }
   }, [])
 
@@ -38,20 +43,27 @@ function App() {
     setIsLoggedIn(true)
   }
 
+  useEffect(() => {
+    if (user && parseInt(user.dataRole) < 3) {
+      setIsAdmin(true)
+    } else {
+      setIsAdmin(false)
+    }
+  }, [user, isLoggedIn])
+
   const handleLogout = () => {
     setIsLoggedIn(false)
   }
-
-  const redirectToLogin = () => <Navigate to="/login" />
-  const redirectToHome = () => <Navigate to="/index" />
 
   return (
     <Router>
       <Routes>
         {/* Redirection en fonction de l'état isLoggedIn */}
-        {!isLoggedIn && <Route path="/*" element={redirectToLogin} />}
-        {isLoggedIn && <Route path="*" element={redirectToHome} />}
-        {isLoggedIn && <Route path="/login" element={redirectToHome} />}
+        {!isLoggedIn && <Route path="*" element={<Navigate to="/login" />} />}
+        {isLoggedIn && <Route path="" element={<Navigate to="/index" />} />}
+        {isLoggedIn && (
+          <Route path="/login" element={<Navigate to="/index" />} />
+        )}
 
         {/* Pages pour les utilisateurs connectés */}
         {isLoggedIn && (
@@ -64,6 +76,18 @@ function App() {
               element={<AccountApp onLogout={handleLogout} />}
             />
             <Route path="/profile/:id" element={<ProfilePage />} />
+            {isAdmin ? (
+              <>
+                <Route path="/admin" element={<AdminPage />}>
+                  <Route path="/admin/comment" element={<AdminComment />} />
+                  <Route path="/admin/user" element={<AdminUser />} />
+                  <Route path="/admin/review" element={<AdminReview />} />
+                </Route>
+                <Route path="/admin/user/edit/:id" element={<AdminEdit />} />
+              </>
+            ) : (
+              <Route path="/admin" element={<Navigate to="/index" />} />
+            )}
           </>
         )}
 
@@ -77,9 +101,6 @@ function App() {
             />
           </>
         )}
-
-        {/* Redirection pour l'URL sans "/" à la fin */}
-        {!isLoggedIn && <Route path="" element={<Navigate to="/login" />} />}
       </Routes>
     </Router>
   )

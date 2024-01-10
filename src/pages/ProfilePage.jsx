@@ -136,6 +136,7 @@ function ProfilePage({ onLogout }) {
           <Link className="accountUsernameLink" to={`/profile/${profile.id}`}>
             <h2 className="accountUsername">@{profile.username}</h2>
           </Link>
+          <h2>{profile.bio}</h2>
         </div>
         <h3 className="accountTitle">
           {comments.length > 0

@@ -247,6 +247,10 @@ p.good {
   display: none;
 }
 
+.container.admin {
+  max-width: 90vw;
+}
+
 .card {
   width: 100%;
   height: 450px;
@@ -358,15 +362,27 @@ p.good {
   color: var(--yellow);
 }
 
+.starContainer.update {
+  position: fixed;
+  bottom: 110px;
+  z-index: 999;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .rightSide {
   padding-left: 2vh;
 }
 
 .commentWrapper {
-  max-height: 75%;
+  height: 60%;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
+}
+
+.commentWrapper.tall {
+  height: 80%;
 }
 
 .commentWrapper.account {
@@ -390,11 +406,94 @@ p.good {
   scroll-snap-align: center;
 }
 
+.commentContainerAdmin {
+  text-align: left;
+  list-style: none;
+  text-wrap: balance;
+  font-family: var(--fontMain);
+  scroll-snap-align: center;
+  display: flex;
+  align-items: center;
+  font-size: 18px !important;
+  gap: 1.5vh;
+  justify-content: space-around;
+  margin-block: 1.5vh;
+}
+
+.userContainerAdmin {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  font-size: 18px !important;
+  gap: 1.5vh;
+  justify-content: space-around;
+  margin-block: 1vh;
+  padding: 32px;
+  background: white;
+  border-radius: 12px;
+  -webkit-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+}
+
+.userContainerAdmin > * {
+  width: 33%;
+  text-align: justify;
+}
+
+.userContainerAdmin .editLink {
+  text-decoration: none;
+  color: unset;
+  background: transparent;
+  padding: 5px 15px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  border: 3px solid var(--green);
+  transition: all 0.2s ease-in-out;
+  display: inline;
+  cursor: pointer;
+}
+
+.commentAuthor.admin:hover {
+  color: var(--green);
+  transition: all 0.2s ease-in-out;
+}
+
+.userContainerAdmin .deleteLink {
+  text-decoration: none;
+  color: unset;
+  background: transparent;
+  padding: 5px 15px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  border: 3px solid darkred;
+  transition: all 0.2s ease-in-out;
+  display: inline;
+  cursor: pointer;
+}
+
+.userContainerAdmin .editLink:hover {
+  background: var(--green);
+}
+
+.userContainerAdmin .deleteLink:hover {
+  background: darkred;
+  color: white;
+}
+
 .commentAuthor {
   font-size: 23px;
   color: var(--green);
   font-weight: bold;
   text-decoration: none;
+}
+
+.commentAuthor.admin {
+  color: black;
+}
+
+.adminWrapper {
+  display: flex;
+  gap: 0.5vh;
 }
 
 .commentContent {
@@ -452,8 +551,30 @@ p.good {
   font-style: italic;
 }
 
+.accountTitleContainer {
+  display: flex;
+  gap: 0.5vw;
+}
+
 .accountTitle {
   text-align: left;
+  padding: 15px;
+  border-radius: 12px;
+  width: 13vw;
+  background: transparent;
+  border: 3px solid var(--lightBlue);
+}
+
+.accountTitle.reviews {
+  border: 3px solid var(--green);
+}
+
+.accountTitle.activated {
+  background: var(--lightBlue);
+}
+
+.accountTitle.reviews.activated {
+  background: var(--green);
 }
 
 .updateField {
@@ -479,19 +600,32 @@ p.good {
 .deleteButton > button {
   color: white;
   font-family: var(--fontMain);
-  background-color: darkred;
-  border-radius: 12px;
+  background-color: white;
+  border-radius: 50%;
+  aspect-ratio: 1;
   border: none;
+  margin: 0.1vh;
   padding: 5px 10px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  transform: translateX(-20%);
+}
+
+.deleteButton > button > * {
+  transform: translateY(10%);
+  color: darkred;
 }
 
 .deleteButton.account {
   text-align: left;
 }
 
-.deleteButton > button:hover {
+.deleteButton > button > * :hover {
+  color: rgb(209, 3, 3);
   cursor: pointer;
-  background-color: rgb(173, 2, 2);
+  scale: 1.1;
+  transition: all 0.3s ease-in-out;
 }
 
 .updateButton > button {
@@ -516,6 +650,10 @@ p.good {
 .updateDeleteButtons * {
   margin-bottom: 0.5vh;
   width: 100%;
+}
+
+.deleteButton.account > * {
+  transform: unset;
 }
 
 .interactionContainer {
@@ -560,7 +698,7 @@ p.good {
 
 .accountCommentContainer {
   margin-bottom: 3vh;
-  /* height: 15vh; */
+  min-height: 15vh;
   background: white;
   border-radius: 12px;
   -webkit-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
@@ -574,7 +712,7 @@ p.good {
 }
 
 .accountCommentContainer > * {
-  margin-bottom: 0.5vh;
+  margin-top: 3vh;
 }
 
 .accountCommentContainer img {
@@ -616,6 +754,15 @@ p.good {
   position: absolute;
   top: 22px;
   list-style: none;
+}
+
+.commentDateAdmin {
+  color: var(--grey);
+  text-align: left;
+  font-weight: 400;
+  font-style: italic;
+  list-style: none;
+  margin-inline: 1vh;
 }
 
 .search {
@@ -825,6 +972,21 @@ input[type="radio"] {
   background: var(--blue);
 }
 
+.reviewContainer {
+  border: 1px solid var(--green);
+  border-radius: 12px;
+  max-height: 10vh;
+  background: #cff7a06e;
+  text-align: left;
+  overflow-y: scroll;
+  padding: 5px;
+  width: 84%;
+}
+
+.reviewContainer::-webkit-scrollbar {
+  display: none;
+}
+
 @media screen and (min-width: 768px) {
   nav {
     left: 0;
@@ -861,6 +1023,10 @@ input[type="radio"] {
 @media screen and (max-width: 480px) {
   .commentWrapper {
     max-height: 70%;
+  }
+
+  .commentWrapper.tall {
+    height: 85%;
   }
 
   .commentAuthor {

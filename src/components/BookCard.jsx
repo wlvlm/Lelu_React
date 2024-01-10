@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { jwtDecode } from "jwt-decode"
 import Modal from "react-modal"
-import { FaStar } from "react-icons/fa"
+import { FaStar, FaTrash } from "react-icons/fa"
 
-const BookCard = ({ book, comments, likes, ratingAverage }) => {
+const BookCard = ({ book, comments, likes, ratingAverage, reviews }) => {
   const heartFilled = require("../assets/img/heartFilled.png")
   const heartStroke = require("../assets/img/heartStroke.png")
   const [value, setValue] = useState("")
@@ -13,6 +13,7 @@ const BookCard = ({ book, comments, likes, ratingAverage }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [rating, setRating] = useState(null)
   const [hover, setHover] = useState(null)
+  const [updateReview, setUpdateReview] = useState(null)
   const navigate = useNavigate()
 
   const token = localStorage.getItem("jwt")
@@ -192,7 +193,10 @@ const BookCard = ({ book, comments, likes, ratingAverage }) => {
     const storedIsLiked = localStorage.getItem(`isLiked_${book.id}`)
     setIsLiked(storedIsLiked === "true")
     setCurrentLikes(likes[book.id] || 0)
-  }, [likes, book.id])
+    if (reviews) {
+      setUpdateReview(reviews.content)
+    }
+  }, [likes, book.id, reviews])
 
   const formatLikes = (likes) => {
     if (likes < 1000) {
@@ -243,7 +247,7 @@ const BookCard = ({ book, comments, likes, ratingAverage }) => {
             })}
           </div>
           <button className="ratingButton" onClick={openModal}>
-            Noter
+            {reviews && reviews.content !== undefined ? "Modifier" : "Noter"}
           </button>
         </div>
         <img src={book.coverUrl} alt={book.title} />
@@ -251,7 +255,13 @@ const BookCard = ({ book, comments, likes, ratingAverage }) => {
       </div>
       <div className="rightSide">
         {comments && comments.length > 0 ? (
-          <ul className="commentWrapper">
+          <ul
+            className={
+              reviews && reviews.content !== undefined
+                ? "commentWrapper"
+                : "commentWrapper tall"
+            }
+          >
             {comments.map((comment, index) => (
               <div className="commentContainer" key={index}>
                 <li>
@@ -270,7 +280,7 @@ const BookCard = ({ book, comments, likes, ratingAverage }) => {
                         handleDeleteComment(comment.id, comment.UserId)
                       }
                     >
-                      Supprimer
+                      <FaTrash />
                     </button>
                   </li>
                 ) : null}
@@ -280,6 +290,36 @@ const BookCard = ({ book, comments, likes, ratingAverage }) => {
         ) : (
           <p>Aucun commentaire sur ce livre !</p>
         )}
+        {reviews && reviews.rating > 0 ? (
+          <div className="reviewContainer">
+            <div className="starContainer">
+              {[...Array(5)].map((star, index) => {
+                const currentRating = index + 1
+                return (
+                  <label key={index}>
+                    <input
+                      type="radio"
+                      required
+                      name="rating"
+                      value={currentRating}
+                    />
+                    <FaStar
+                      className="star model"
+                      size={25}
+                      color={
+                        currentRating <= reviews.rating ? "ffc107" : "#e4e5e9"
+                      }
+                    />
+                  </label>
+                )
+              })}
+            </div>
+            <p>
+              <b>Votre avis : </b>
+            </p>
+            <p>{reviews && reviews.content}</p>
+          </div>
+        ) : null}
         <div className="interactionContainer">
           <form onSubmit={(event) => handlePostComment(event, book.id)}>
             <input
@@ -327,13 +367,16 @@ const BookCard = ({ book, comments, likes, ratingAverage }) => {
               <div className="starContainer">
                 {[...Array(5)].map((star, index) => {
                   const currentRating = index + 1
+                  if (reviews && reviews.ratings !== undefined) {
+                    setRating(reviews.rating)
+                  }
                   return (
                     <label>
                       <input
                         type="radio"
                         required
                         name="rating"
-                        value={currentRating}
+                        value={rating}
                         onClick={() => {
                           setRating(currentRating)
                         }}
@@ -357,7 +400,13 @@ const BookCard = ({ book, comments, likes, ratingAverage }) => {
           </div>
         </div>
         <form onSubmit={(event) => handleReviewPost(event, book.id, rating)}>
-          <textarea required name="content" className="modalInput"></textarea>
+          <textarea
+            required
+            name="content"
+            className="modalInput"
+            value={updateReview}
+            onChange={(e) => setUpdateReview(e.target.value)}
+          ></textarea>
           <input className="ratingButton" type="submit" value="Poster" />
         </form>
         <button onClick={closeModal}>Fermer</button>
