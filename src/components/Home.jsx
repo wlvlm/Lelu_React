@@ -165,23 +165,31 @@ function Home() {
         ...ratingPromises,
       ])
 
+      // Crée un tableau de promesses pour récupérer les évaluations des utilisateurs pour chaque livre.
       const userRatingPromises = booksData.map(async (book) => {
+        // Effectue une requête pour récupérer les évaluations de l'utilisateur pour le livre actuel.
         return await fetch(
           `http://localhost:3001/api/review/user/${decodedToken.dataId}`
         )
           .then((ratingResponse) => ratingResponse.json())
           .then((ratingData) => {
+            // Vérifie si des évaluations ont été trouvées pour le livre actuel.
             if (Array.isArray(ratingData.data) && ratingData.data.length > 0) {
+              // Recherche l'évaluation spécifique correspondant au livre dans les données récupérées.
               const reviewUser = ratingData.data.find(
                 (reviewFetched) => reviewFetched.bookId === book.id
               )
 
+              // Met à jour le state des évaluations en ajoutant l'évaluation trouvée ou un tableau vide si aucune évaluation n'est trouvée.
               setReview((prevReviews) => ({
                 ...prevReviews,
                 [book.id]: reviewUser ? reviewUser : [],
               }))
             } else {
+              // Affiche une erreur dans la console si aucune évaluation n'est trouvée pour le livre.
               console.error(`Aucun avis trouvé pour le livre "${book.title}"`)
+
+              // Met à jour le state des évaluations avec un tableau vide.
               setReview((prevReviews) => ({
                 ...prevReviews,
                 [book.id]: [],
@@ -189,10 +197,12 @@ function Home() {
             }
           })
           .catch((error) => {
+            // Affiche une erreur dans la console en cas d'erreur lors de la récupération des évaluations.
             console.error(error.message)
           })
       })
 
+      // Attend que toutes les promesses du tableau soient résolues avant de passer à la suite.
       await Promise.all(userRatingPromises)
     } catch (error) {
       console.error(

@@ -155,6 +155,7 @@ const BookCard = ({ book, comments, likes, ratingAverage, reviews }) => {
 
   const handleReviewPost = async (event, bookId, rating) => {
     event.preventDefault()
+    // Récupération des données du formulaire de post
     const reviewData = {
       content: event.target.content.value,
       bookId: bookId,
@@ -162,6 +163,7 @@ const BookCard = ({ book, comments, likes, ratingAverage, reviews }) => {
       rating: rating,
     }
 
+    // fetch en asynchrone sur l'api au endpoint review avec la méthode post pour l'insertion d'une nouvelle donnée.
     try {
       const response = await fetch("http://localhost:3001/api/review", {
         method: "POST",
@@ -172,18 +174,23 @@ const BookCard = ({ book, comments, likes, ratingAverage, reviews }) => {
         body: JSON.stringify(reviewData),
       })
 
+      // On récupère la réponse de l'API dans la constante postReview
       const postReview = await response.json()
 
       if (response.ok) {
+        // Si la réponse est bonne, alors on rafraichit la page pour afficher les données entrées
         window.location.reload()
       } else {
+        // Sinon, si la réponse est négative et renvoie une réponse indiquant que la review existe déjà, alors on déplace l'utilisateurs sur l'url séléctionnée
         if (postReview.data === "Review exists") {
           navigate("/edit/review")
         } else {
+          // Sinon, on anticipe une erreur quelconque
           console.error("Échec lors de la création de l'avis :", postReview)
           alert("La création de l'avis a échoué. Veuillez réessayer.")
         }
       }
+      // Sinon, on anticipe une erreur quelconque
     } catch (error) {
       console.error("Erreur : " + error.message)
     }
